@@ -1,0 +1,16 @@
+# What Jenkins checks for this repository, read by the pipeline of the yggdrasil installation that runs it (yggdrasil's
+# docs/catalog.md, "Repository pipeline file", has every field). It is data, never code: images (pinned by version and
+# digest, which Renovate keeps up to date), commands, globs and the names of Jenkins credentials. The commands are
+# scripts under ci/ that run from the repository's root, so you can run them on your own machine too.
+#
+# Check it where the catalog is, in the yggdrasil checkout:
+#   python3 scripts/pipeline_config.py describe tabnews <this repository's checkout>
+
+checks:
+  lint: # npm ci, then the repository's own lint:check (prettier --check .), in .nvmrc's Node 18 (hydrogen)
+    image: node:18.20.8-alpine3.21@sha256:8d6421d663b4c28fd3ebc498332f249011d118945588d0a35cb9bc4b8ca09d9e
+    run: ci/lint.sh
+
+  build: # npm ci, then next build (the repository has no tests), in the same Node
+    image: node:18.20.8-alpine3.21@sha256:8d6421d663b4c28fd3ebc498332f249011d118945588d0a35cb9bc4b8ca09d9e
+    run: ci/build.sh
